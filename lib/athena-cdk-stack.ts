@@ -3,6 +3,8 @@ import * as athena from "@aws-cdk/aws-athena";
 import * as glue from "@aws-cdk/aws-glue";
 import * as s3 from "@aws-cdk/aws-s3";
 import { CfnTable } from "@aws-cdk/aws-glue";
+import { athenaDbName, athenaDbNameConstructorId, athenaTableName, configBucketSnapshotArn, indiv_desc, indiv_name, indiv_query } from "./constants";
+
 
 // Initialise project
 // cdk init app --language typescript
@@ -18,13 +20,6 @@ export class AthenaCdkStack extends cdk.Stack {
     // https://docs.aws.amazon.com/cdk/latest/guide/identifiers.html
 
     // No upper case letters for names
-    const athenaDbName: string = "athena_db"; 
-    const athenaDbNameConstructorId: string = "athena_db";
-    const athenaTableName: string = "athena_db"; 
-    const configBucketSnapshotArn = "arn:aws:s3:::config-bucket-320562168102"
-
-    
-
     // Create a new database
     var database = new glue.Database(this, athenaDbNameConstructorId, {
       databaseName: athenaDbName,
@@ -71,7 +66,12 @@ export class AthenaCdkStack extends cdk.Stack {
     // Data Format: https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-glue.DataFormat.html
 
     
-    
+    new athena.CfnNamedQuery(this, indiv_name, {
+      'database': athenaDbName,
+      'queryString': indiv_query,
+      'name': indiv_name,
+      'description': indiv_desc
+    });
   }
 }
 
